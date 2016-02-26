@@ -35,7 +35,12 @@ L33T_TABLE =
   z: ['2']
 
 REGEXEN =
-  recent_year:  /19\d\d|200\d|201\d/g
+  recent_year:
+    regex: /19\d\d|200\d|201\d/g
+    scoring_method: 'regex'
+  student_number:
+    regex: /s[0-9]{9}/gi
+    scoring_method: 'dictionary'
 
 DATE_MAX_YEAR = 2050
 DATE_MIN_YEAR = 1000
@@ -411,17 +416,24 @@ matching =
 
   regex_match: (password, _regexen = REGEXEN) ->
     matches = []
-    for name, regex of _regexen
+    for name, regex_object of _regexen
+      regex = regex_object.regex
+      scoring_method = regex_object.scoring_method
       regex.lastIndex = 0 # keeps regex_match stateless
       while rx_match = regex.exec password
         token = rx_match[0]
         matches.push
-          pattern: 'regex'
+          pattern: scoring_method
           token: token
           i: rx_match.index
           j: rx_match.index + rx_match[0].length - 1
           regex_name: name
           regex_match: rx_match
+          matched_word: rx_match
+          rank: 1
+          dictionary_name: 'regex'
+          reversed: false
+          l33t: false
     @sorted matches
 
   #-------------------------------------------------------------------------------

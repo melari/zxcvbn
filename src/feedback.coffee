@@ -97,6 +97,9 @@ feedback =
         'Names and surnames by themselves are easy to guess'
       else
         'Common names and surnames are easy to guess'
+    else if match.dictionary_name == 'regex'
+      if match.regex_name == 'student_number'
+        'Student numbers are easy to obtain and guess'
     else
       ''
 
